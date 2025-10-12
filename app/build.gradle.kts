@@ -51,6 +51,10 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(project(":data"))
     implementation(project(":domain"))
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
+    implementation(libs.fragment)
+    implementation(libs.androidx.legacy.support.v4)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
