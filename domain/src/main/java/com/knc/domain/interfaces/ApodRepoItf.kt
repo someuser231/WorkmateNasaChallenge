@@ -3,5 +3,5 @@ package com.knc.domain.interfaces
 import com.knc.domain.models.ApodModel
 
 interface ApodRepoItf {
-    fun getItems(): ArrayList<ApodModel>
+    fun loadItems()
 }
