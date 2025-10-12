@@ -33,8 +33,11 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
+
     implementation(project(":domain"))
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
