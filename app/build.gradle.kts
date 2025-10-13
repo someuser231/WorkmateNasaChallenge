@@ -56,6 +56,8 @@ dependencies {
     implementation(libs.fragment)
     implementation(libs.androidx.legacy.support.v4)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.paging.common)
+    implementation(libs.androidx.paging.runtime)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -5,13 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.knc.data.repo.ApodRepoImp
 import com.knc.domain.usecases.GetItems
 import com.knc.domain.usecases.LoadItems
 import com.knc.nasachallenge.databinding.FrgHomeBinding
 import com.knc.nasachallenge.recycler_view.RVHelper
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,10 +59,17 @@ class HomeFrg(val apodRepo: ApodRepoImp, val frgHolderId: Int) : Fragment() {
         viewBinding.rvMain.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.rvMain.adapter = rvHelper
 
-        apodRepo.liveData.observe(requireActivity(), Observer {
-            rvHelper.dataItems = GetItems(it).execute()
-            rvHelper.notifyDataSetChanged()
-        })
+        lifecycleScope.launch {
+            apodRepo.loadPaging().collectLatest {
+                rvHelper.submitData(it)
+            }
+
+        }
+
+//        apodRepo.liveData.observe(requireActivity(), Observer {
+//            rvHelper.dataItems = GetItems(it).execute()
+//            rvHelper.notifyDataSetChanged()
+//        })
     }
 
 //    companion object {

@@ -38,8 +38,10 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter)
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.9.4")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.4")
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.paging.common)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

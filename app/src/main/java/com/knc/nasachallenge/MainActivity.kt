@@ -2,6 +2,7 @@ package com.knc.nasachallenge
 
 import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModelProvider
 import com.knc.data.repo.ApodRepoImp
 import com.knc.domain.usecases.LoadItems
 import com.knc.nasachallenge.databinding.ActivityMainBinding
@@ -17,11 +18,12 @@ class MainActivity : FragmentActivity() {
         setContentView(viewBinding.root)
 
         LoadItems(apodRepo).execute()
+        val viewModel = ViewModelProvider(this).get(apodRepo::class.java)
 
         supportFragmentManager.beginTransaction()
             .replace(
                 viewBinding.fragmentHolder.id,
-                HomeFrg(apodRepo, viewBinding.fragmentHolder.id)
+                HomeFrg(viewModel, viewBinding.fragmentHolder.id)
             )
             .commit()
     }
