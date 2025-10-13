@@ -20,7 +20,7 @@ class ApodApiPaging(val apodApi: ApodApiItf) : PagingSource<String, ApodModel>()
     override suspend fun load(params: LoadParams<String>): LoadResult<String, ApodModel> {
         return try {
             val page = params.key ?: getCurrentDate()
-            val endDate = page.toString()
+            val endDate = page
             val startDate = getPreviousDate(endDate, 30)
 
             val response = apodApi.getApod(apiKey = ApodApiUtils.API_KEY,

@@ -9,6 +9,7 @@ import androidx.activity.OnBackPressedCallback
 import com.knc.domain.models.ApodModel
 import com.knc.nasachallenge.R
 import com.knc.nasachallenge.databinding.FrgAddlInfoBinding
+import com.squareup.picasso.Picasso
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,6 +51,8 @@ class AddlInfoFrg(val item: ApodModel) : Fragment() {
         viewBinding.txtTitle.text = item.title
         viewBinding.txtDate.text = item.date
         viewBinding.txtDescription.text = item.explanation
+
+        Picasso.get().load(item.url).into(viewBinding.imgSimple)
 
         viewBinding.toolbar.ibtnBack.setOnClickListener {
             parentFragmentManager.popBackStack()
