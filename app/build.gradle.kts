@@ -55,6 +55,7 @@ dependencies {
     implementation(libs.androidx.cardview)
     implementation(libs.fragment)
     implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.constraintlayout)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

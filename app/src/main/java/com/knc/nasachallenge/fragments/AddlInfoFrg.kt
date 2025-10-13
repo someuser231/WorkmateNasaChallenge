@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import com.knc.domain.models.ApodModel
 import com.knc.nasachallenge.R
 import com.knc.nasachallenge.databinding.FrgAddlInfoBinding
@@ -45,9 +46,23 @@ class AddlInfoFrg(val item: ApodModel) : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         viewBinding.txtTitle.text = item.title
         viewBinding.txtDate.text = item.date
         viewBinding.txtDescription.text = item.explanation
+
+        viewBinding.toolbar.ibtnBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            this,
+            object: OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    parentFragmentManager.popBackStack()
+                }
+
+            })
     }
 
 //    companion object {

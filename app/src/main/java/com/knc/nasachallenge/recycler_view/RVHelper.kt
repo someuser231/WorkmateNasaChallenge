@@ -7,8 +7,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.knc.domain.models.ApodModel
 import com.knc.nasachallenge.databinding.RvItemBinding
+import com.knc.nasachallenge.fragments.AddlInfoFrg
 
-class RVHelper: RecyclerView.Adapter<RVViewHolder>() {
+class RVHelper(val frgHolderId: Int): RecyclerView.Adapter<RVViewHolder>() {
     var dataItems = ArrayList<ApodModel>()
 
     override fun onCreateViewHolder(
@@ -31,6 +32,10 @@ class RVHelper: RecyclerView.Adapter<RVViewHolder>() {
         holder.view.txtDate.text = dataItems[position].date
         holder.view.root.setOnClickListener {
             val frgManager = (holder.view.root.context as FragmentActivity).supportFragmentManager
+            frgManager.beginTransaction().replace(
+                frgHolderId,
+                AddlInfoFrg(dataItems[position])
+            ).addToBackStack(null).commit()
         }
     }
 
