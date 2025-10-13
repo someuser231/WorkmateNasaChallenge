@@ -8,8 +8,10 @@ import androidx.paging.PagingDataAdapter
 import com.knc.domain.models.ApodModel
 import com.knc.nasachallenge.databinding.RvItemBinding
 import com.knc.nasachallenge.fragments.AddlInfoFrg
+import com.knc.nasachallenge.view_models.ApodViewModel
 
-class RVHelper(val frgHolderId: Int): PagingDataAdapter<ApodModel, RVItem>(RVDiffUtil()) {
+class RVHelper(val apodViewModel: ApodViewModel, val frgHolderId: Int):
+    PagingDataAdapter<ApodModel, RVItem>(RVDiffUtil()) {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -28,11 +30,12 @@ class RVHelper(val frgHolderId: Int): PagingDataAdapter<ApodModel, RVItem>(RVDif
     ) {
         holder.bind(getItem(position)!!)
         holder.view.root.setOnClickListener {
+            apodViewModel.apodItem = getItem(position)!!
             (holder.view.root.context as FragmentActivity)
                 .supportFragmentManager
                 .beginTransaction().replace(
                     frgHolderId,
-                    AddlInfoFrg(getItem(position)!!)
+                    AddlInfoFrg()
                 )
                 .addToBackStack(null)
                 .commit()

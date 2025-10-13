@@ -1,6 +1,5 @@
 package com.knc.data.remote
 
-import com.knc.data.interfaces.ApodApiItf
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 

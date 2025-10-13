@@ -5,11 +5,17 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.knc.data.repo.ApodRepoImp
+import com.knc.domain.interfaces.ApodRepoItf
 import com.knc.domain.models.ApodModel
+import com.knc.domain.usecases.LoadItems
 import kotlinx.coroutines.flow.Flow
 
 open class ApodViewModel: ViewModel() {
-    val pagingData: Flow<PagingData<ApodModel>> by lazy {
-        ApodRepoImp().loadPaging().cachedIn(viewModelScope)
+    val apodRepo: ApodRepoItf by lazy {
+        ApodRepoImp()
     }
+    val pagingData: Flow<PagingData<ApodModel>> by lazy {
+        LoadItems(apodRepo).execute().cachedIn(viewModelScope)
+    }
+    lateinit var apodItem: ApodModel
 }

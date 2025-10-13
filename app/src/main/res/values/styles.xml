@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Home" />
+    <style name="Home.Text">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AddlInfo" />
+    <style name="AddlInfo.Text">
+        <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginTop">20dp</item>
+    </style>
+</resources>
