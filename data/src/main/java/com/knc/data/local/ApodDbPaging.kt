@@ -32,6 +32,10 @@ class ApodDbPaging(val db: MainDb): PagingSource<String, ApodModel>() {
 
             val nextKey = if(response.isNotEmpty()) getPreviousDate(startDate, 1) else null
 
+            if (response.isEmpty()) {
+                throw Exception("response is empty")
+            }
+
             LoadResult.Page(
                 data = response.sortedByDescending { it.date },
                 prevKey = null,

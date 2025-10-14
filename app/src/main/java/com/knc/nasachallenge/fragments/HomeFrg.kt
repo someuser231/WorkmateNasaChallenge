@@ -10,6 +10,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.knc.domain.usecases.LoadApodApi
+import com.knc.domain.usecases.LoadApodDb
 import com.knc.domain.usecases.LoadDjsnProductApi
 import com.knc.domain.usecases.LoadDjsnProductDb
 import com.knc.nasachallenge.databinding.FrgHomeBinding
@@ -20,6 +22,7 @@ import com.knc.nasachallenge.recycler_view.RVLoadMore
 import com.knc.nasachallenge.view_models.AppViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -65,6 +68,8 @@ class HomeFrg() : Fragment() {
         val rvHelperApod = RVHelperApod(appViewModel,frgHolderId!!)
         val rvHelperDjsnPrd = RVHelperDjsnProduct(appViewModel, frgHolderId!!)
 
+        appViewModel.modelFetchingId.value = 1
+
         viewBinding.rgrpMain.setOnCheckedChangeListener { group, checkedId ->
             when(checkedId){
                 viewBinding.rbtnApod.id -> appViewModel.modelFetchingId.value = 0
@@ -73,45 +78,118 @@ class HomeFrg() : Fragment() {
         }
 
         viewBinding.rvMain.layoutManager = LinearLayoutManager(requireContext())
-        viewBinding.rvMain.adapter = rvHelperDjsnPrd.withLoadStateFooter(
-            RVLoadMore{
-                checkInternet()
-                rvHelperDjsnPrd.retry()
-            }
-        )
-        viewBinding.btnRetry.setOnClickListener {
-            checkInternet()
-            rvHelperDjsnPrd.retry()
-        }
 
-        appViewModel.isConnected.observe(viewLifecycleOwner) {
-            viewLifecycleOwner.lifecycleScope.launch {
-                when (it) {
-                    true -> LoadDjsnProductApi(appViewModel.djsnRepo).execute().collectLatest {
-                        appViewModel.pagingDjsnPrdApi.collect {
-                            rvHelperDjsnPrd.submitData(it)
+        appViewModel.modelFetchingId.observe(viewLifecycleOwner) {
+            when (it) {
+                0 -> {
+                    checkInternet()
+                    rvHelperApod.retry()
+                    initRvAdapter(rvHelperApod)
+                    updateData(rvHelperApod)
+                    checkFail(rvHelperApod)
+                }
+                1 -> {
+                    checkInternet()
+                    rvHelperDjsnPrd.retry()
+                    initRvAdapter(rvHelperDjsnPrd)
+                    updateData(rvHelperDjsnPrd)
+                    checkFail(rvHelperDjsnPrd)
+                }
+            }
+        }
+    }
+
+    fun initRvAdapter(rvHelper: Any) {
+        when(rvHelper){
+            is RVHelperApod -> {
+                viewBinding.rvMain.adapter = rvHelper.withLoadStateFooter(
+                    RVLoadMore{
+                        checkInternet()
+                        rvHelper.retry()
+                    }
+                )
+                viewBinding.btnRetry.setOnClickListener {
+                    checkInternet()
+                    rvHelper.retry()
+                }
+            }
+            is RVHelperDjsnProduct -> {
+                viewBinding.rvMain.adapter = rvHelper.withLoadStateFooter(
+                    RVLoadMore{
+                        checkInternet()
+                        rvHelper.retry()
+                    }
+                )
+                viewBinding.btnRetry.setOnClickListener {
+                    checkInternet()
+                    rvHelper.retry()
+                }
+            }
+        }
+    }
+
+    fun updateData(rvHelper: Any) {
+        when (rvHelper) {
+            is RVHelperApod -> {
+                appViewModel.isConnected.observe(viewLifecycleOwner) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        when (it) {
+                            true -> LoadApodApi(appViewModel.apodRepo).execute().collectLatest {
+                                appViewModel.pagingApodApi.collect {
+                                    rvHelper.submitData(it)
+                                }
+                            }
+                            false -> LoadApodDb(appViewModel.apodRepo).execute().collectLatest {
+                                appViewModel.pagingApodDb.collect {
+                                    rvHelper.submitData(it)
+                                }
+                            }
                         }
                     }
-                    false -> LoadDjsnProductDb(appViewModel.djsnRepo).execute().collectLatest {
-                        appViewModel.pagingDjsnPrdDb.collect {
-                            rvHelperDjsnPrd.submitData(it)
+                }
+            }
+            is RVHelperDjsnProduct -> {
+                appViewModel.isConnected.observe(viewLifecycleOwner) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        when (it) {
+                            true -> LoadDjsnProductApi(appViewModel.djsnRepo).execute().collectLatest {
+                                appViewModel.pagingDjsnPrdApi.collect {
+                                    rvHelper.submitData(it)
+                                }
+                            }
+                            false -> LoadDjsnProductDb(appViewModel.djsnRepo).execute().collectLatest {
+                                appViewModel.pagingDjsnPrdDb.collect {
+                                    rvHelper.submitData(it)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
+    }
 
-//        LoadApod(appViewModel.apodRepo).execute().collectLatest {
-//            appViewModel.pagingApod.collect {
-//                rvHelperApod.submitData(it)
-//            }
-//        }
-
-        lifecycleScope.launch {
-            rvHelperDjsnPrd.loadStateFlow.collect {
-                viewBinding.prgbarRv.isVisible = it.refresh is LoadState.Loading
-                viewBinding.txtConnectionFailed.isVisible = it.refresh is LoadState.Error
-                viewBinding.btnRetry.isVisible = it.refresh is LoadState.Error
+    private var jobCheckFail: Job? = null
+    fun checkFail(rvHelper: Any) {
+        jobCheckFail?.cancel()
+        when(rvHelper){
+            is RVHelperApod -> {
+                jobCheckFail = lifecycleScope.launch {
+                    rvHelper.loadStateFlow.collect {
+                        viewBinding.prgbarRv.isVisible = it.refresh is LoadState.Loading
+                        viewBinding.txtConnectionFailed.isVisible = it.refresh is LoadState.Error
+                        viewBinding.btnRetry.isVisible = it.refresh is LoadState.Error
+                    }
+                }
+            }
+            is RVHelperDjsnProduct -> {
+                jobCheckFail = lifecycleScope.launch {
+                    rvHelper.loadStateFlow.collect {
+                        viewBinding.prgbarRv.isVisible = it.refresh is LoadState.Loading
+                        viewBinding.txtConnectionFailed.isVisible = it.refresh is LoadState.Error
+                        viewBinding.btnRetry.isVisible = it.refresh is LoadState.Error
+                    }
+                }
             }
         }
     }
