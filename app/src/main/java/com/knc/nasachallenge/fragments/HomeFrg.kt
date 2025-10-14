@@ -10,13 +10,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.knc.domain.usecases.LoadApod
-import com.knc.domain.usecases.LoadDjsnProduct
+import com.knc.domain.usecases.LoadDjsnProductApi
+import com.knc.domain.usecases.LoadDjsnProductDb
 import com.knc.nasachallenge.databinding.FrgHomeBinding
-import com.knc.nasachallenge.recycler_view.RVHelperApod
+import com.knc.nasachallenge.network.NetworkUtils
 import com.knc.nasachallenge.recycler_view.RVHelperDjsnProduct
 import com.knc.nasachallenge.recycler_view.RVLoadMore
 import com.knc.nasachallenge.view_models.AppViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -42,6 +44,7 @@ class HomeFrg() : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewBinding = FrgHomeBinding.inflate(inflater)
+        checkInternet()
         return viewBinding.root
     }
 
@@ -65,25 +68,57 @@ class HomeFrg() : Fragment() {
                 rvHelperDjsnPrd.retry()
             }
         )
+        viewBinding.btnRetry.setOnClickListener {
+            checkInternet()
+            rvHelperDjsnPrd.retry()
+        }
 
+        appViewModel.isConnected.observe(viewLifecycleOwner) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                when (it) {
+                    true -> LoadDjsnProductApi(appViewModel.djsnRepo).execute().collectLatest {
+                        appViewModel.pagingDjsnPrdApi.collect {
+                            rvHelperDjsnPrd.submitData(it)
+                        }
+                    }
+                    false -> LoadDjsnProductDb(appViewModel.djsnRepo).execute().collectLatest {
+                        appViewModel.pagingDjsnPrdDb.collect {
+                            rvHelperDjsnPrd.submitData(it)
+                        }
+                    }
+                }
+            }
+        }
         lifecycleScope.launch {
+
 //            LoadApod(appViewModel.apodRepo).execute().collectLatest {
 //                appViewModel.pagingApod.collect {
 //                    rvHelperApod.submitData(it)
 //                }
 //            }
-            LoadDjsnProduct(appViewModel.djsnRepo).execute().collectLatest {
-                appViewModel.pagingDjsnPrd.collect {
-                    rvHelperDjsnPrd.submitData(it)
-                }
-            }
 
         }
 
         lifecycleScope.launch {
             rvHelperDjsnPrd.loadStateFlow.collect {
                 viewBinding.prgbarRv.isVisible = it.refresh is LoadState.Loading
+                viewBinding.txtConnectionFailed.isVisible = it.refresh is LoadState.Error
+                viewBinding.btnRetry.isVisible = it.refresh is LoadState.Error
             }
+        }
+    }
+
+    fun checkInternet() {
+        if (NetworkUtils.isNetworkAvailable(requireContext())){
+            CoroutineScope(Dispatchers.Main).launch {
+                if (NetworkUtils.isInternetAvailable()){
+                    appViewModel.isConnected.value = true
+                } else {
+                    appViewModel.isConnected.value = false
+                }
+            }
+        } else {
+            appViewModel.isConnected.value = false
         }
     }
 }

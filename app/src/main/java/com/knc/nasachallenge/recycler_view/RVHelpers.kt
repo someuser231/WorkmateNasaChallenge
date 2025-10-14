@@ -3,11 +3,10 @@ package com.knc.nasachallenge.recycler_view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
-import androidx.paging.LoadState
-import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import com.knc.domain.models.ApodModel
 import com.knc.domain.models.DjsnProductModel
+import com.knc.domain.usecases.InsertIntoDjsnDb
 import com.knc.nasachallenge.databinding.RvItemBinding
 import com.knc.nasachallenge.fragments.AddlInfoFrg
 import com.knc.nasachallenge.view_models.AppViewModel
@@ -69,6 +68,7 @@ class RVHelperDjsnProduct(val appViewModel: AppViewModel, val frgHolderId: Int):
         position: Int
     ) {
         holder.bindDjsnPrd(getItem(position)!!)
+        InsertIntoDjsnDb(appViewModel.djsnRepo).execute(getItem(position)!!)
         holder.view.root.setOnClickListener {
             appViewModel.djsnPrdItem = getItem(position)!!
             (holder.view.root.context as FragmentActivity)

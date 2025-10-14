@@ -1,11 +1,10 @@
-package com.knc.data.remote
+package com.knc.data.local
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.knc.data.interfaces.DjsnApiItf
 import com.knc.domain.models.DjsnProductModel
 
-class DjsnApiPaging(val djsnApi: DjsnApiItf): PagingSource<Int, DjsnProductModel>() {
+class DjsnDbPaging(val db: MainDb): PagingSource<Int, DjsnProductModel>() {
     override fun getRefreshKey(state: PagingState<Int, DjsnProductModel>): Int? {
         TODO("Not yet implemented")
     }
@@ -19,7 +18,11 @@ class DjsnApiPaging(val djsnApi: DjsnApiItf): PagingSource<Int, DjsnProductModel
             val response = ArrayList<DjsnProductModel>()
 
             for (i in page..nextKey-1) {
-                response.add(djsnApi.getProducts(i))
+                response.add(
+                    db.dbItemToModel(
+                        db.getDjsnDao().getProduct(i)
+                    )
+                )
             }
 
             LoadResult.Page(

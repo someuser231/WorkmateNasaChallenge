@@ -5,5 +5,8 @@ import com.knc.domain.models.DjsnProductModel
 import kotlinx.coroutines.flow.Flow
 
 interface DjsnRepoItf {
-    fun loadItems(): Flow<PagingData<DjsnProductModel>>
+    fun loadItemsApi(): Flow<PagingData<DjsnProductModel>>
+    fun loadItemsDb(): Flow<PagingData<DjsnProductModel>>
+
+    fun insertIntoDb(djsnPrd: DjsnProductModel)
 }

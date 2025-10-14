@@ -29,7 +29,7 @@ class AddlInfoFrg() : Fragment() {
 
         val item = appViewModel.djsnPrdItem
         viewBinding.txtTitle.text = item.title
-        viewBinding.txtDate.text = "id: ${item.id}"
+        viewBinding.txtDate.text = "Price: $${item.price}"
         viewBinding.txtDescription.text = item.description
         Picasso.get().load(item.images[0]).into(viewBinding.imgSimple)
 

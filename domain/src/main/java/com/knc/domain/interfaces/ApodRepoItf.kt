@@ -5,5 +5,8 @@ import com.knc.domain.models.ApodModel
 import kotlinx.coroutines.flow.Flow
 
 interface ApodRepoItf {
-    fun loadItems(): Flow<PagingData<ApodModel>>
+    fun loadItemsApi(): Flow<PagingData<ApodModel>>
+    fun loadItemsDb(): Flow<PagingData<ApodModel>>
+
+    fun insertIntoDb()
 }
