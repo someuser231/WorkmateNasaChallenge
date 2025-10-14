@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.activityViewModels
 import com.knc.nasachallenge.databinding.FrgAddlInfoBinding
-import com.knc.nasachallenge.view_models.ApodViewModel
+import com.knc.nasachallenge.view_models.AppViewModel
 import com.squareup.picasso.Picasso
 
 class AddlInfoFrg() : Fragment() {
     lateinit var viewBinding: FrgAddlInfoBinding
 
-    val apodViewModel: ApodViewModel by activityViewModels()
+    val appViewModel: AppViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,13 +27,18 @@ class AddlInfoFrg() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val item = apodViewModel.apodItem
-
+        val item = appViewModel.djsnPrdItem
         viewBinding.txtTitle.text = item.title
-        viewBinding.txtDate.text = item.date
-        viewBinding.txtDescription.text = item.explanation
+        viewBinding.txtDate.text = "id: ${item.id}"
+        viewBinding.txtDescription.text = item.description
+        Picasso.get().load(item.images[0]).into(viewBinding.imgSimple)
 
-        Picasso.get().load(item.url).into(viewBinding.imgSimple)
+//        val item = appViewModel.apodItem
+//        viewBinding.txtTitle.text = item.title
+//        viewBinding.txtDate.text = item.date
+//        viewBinding.txtDescription.text = item.explanation
+//
+//        Picasso.get().load(item.url).into(viewBinding.imgSimple)
 
         viewBinding.toolbar.ibtnBack.setOnClickListener {
             parentFragmentManager.popBackStack()

@@ -5,13 +5,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.knc.domain.usecases.LoadItems
+import com.knc.domain.usecases.LoadApod
+import com.knc.domain.usecases.LoadDjsnProduct
 import com.knc.nasachallenge.databinding.FrgHomeBinding
-import com.knc.nasachallenge.recycler_view.RVHelper
-import com.knc.nasachallenge.view_models.ApodViewModel
+import com.knc.nasachallenge.recycler_view.RVHelperApod
+import com.knc.nasachallenge.recycler_view.RVHelperDjsnProduct
+import com.knc.nasachallenge.view_models.AppViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -22,7 +26,7 @@ class HomeFrg() : Fragment() {
 
     lateinit var viewBinding: FrgHomeBinding
 
-    val apodViewModel: ApodViewModel by activityViewModels()
+    val appViewModel: AppViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,17 +56,29 @@ class HomeFrg() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val rvHelper = RVHelper(apodViewModel,frgHolderId!!)
+//        val rvHelperApod = RVHelperApod(appViewModel,frgHolderId!!)
+        val rvHelperDjsnPrd = RVHelperDjsnProduct(appViewModel, frgHolderId!!)
         viewBinding.rvMain.layoutManager = LinearLayoutManager(requireContext())
-        viewBinding.rvMain.adapter = rvHelper
+        viewBinding.rvMain.adapter = rvHelperDjsnPrd
 
         lifecycleScope.launch {
-            LoadItems(apodViewModel.apodRepo).execute().collectLatest {
-                apodViewModel.pagingData.collect {
-                    rvHelper.submitData(it)
+//            LoadApod(appViewModel.apodRepo).execute().collectLatest {
+//                appViewModel.pagingApod.collect {
+//                    rvHelperApod.submitData(it)
+//                }
+//            }
+            LoadDjsnProduct(appViewModel.djsnRepo).execute().collectLatest {
+                appViewModel.pagingDjsnPrd.collect {
+                    rvHelperDjsnPrd.submitData(it)
                 }
             }
 
+        }
+
+        lifecycleScope.launch {
+            rvHelperDjsnPrd.loadStateFlow.collect {
+                viewBinding.prgbarRv.isVisible = it.refresh is LoadState.Loading
+            }
         }
     }
 }

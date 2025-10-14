@@ -5,7 +5,7 @@ import com.knc.domain.interfaces.ApodRepoItf
 import com.knc.domain.models.ApodModel
 import kotlinx.coroutines.flow.Flow
 
-class LoadItems(private val apodRepo: ApodRepoItf) {
+class LoadApod(private val apodRepo: ApodRepoItf) {
     fun execute(): Flow<PagingData<ApodModel>> {
         return apodRepo.loadItems()
     }

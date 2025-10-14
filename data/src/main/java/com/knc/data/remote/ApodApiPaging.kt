@@ -23,7 +23,8 @@ class ApodApiPaging(val apodApi: ApodApiItf) : PagingSource<String, ApodModel>()
             val endDate = page
             val startDate = getPreviousDate(endDate, 30)
 
-            val response = apodApi.getApod(apiKey = ApodApiUtils.API_KEY,
+            val response = apodApi.getApod(
+                apiKey = ApodApiUtils.API_KEY,
                 startDate = startDate,
                 endDate = endDate
             )

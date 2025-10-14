@@ -31,7 +31,7 @@
                 android:layout_weight="1"
                 android:gravity="center_vertical|start"
                 android:text="Title"
-                android:textColor="@color/black"
+                android:textColor="@color/highlight_text"
                 style="@style/Home.Text"
                 />
             <TextView

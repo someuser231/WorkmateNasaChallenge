@@ -35,7 +35,7 @@
                 android:gravity="start"
                 android:text="Title"
                 android:textSize="24sp"
-                android:textColor="@color/black"
+                android:textColor="@color/highlight_text"
                 style="@style/AddlInfo.Text"
                 />
             <TextView
