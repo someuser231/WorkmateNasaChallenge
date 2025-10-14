@@ -14,6 +14,7 @@ import com.knc.domain.usecases.LoadDjsnProductApi
 import com.knc.domain.usecases.LoadDjsnProductDb
 import com.knc.nasachallenge.databinding.FrgHomeBinding
 import com.knc.nasachallenge.network.NetworkUtils
+import com.knc.nasachallenge.recycler_view.RVHelperApod
 import com.knc.nasachallenge.recycler_view.RVHelperDjsnProduct
 import com.knc.nasachallenge.recycler_view.RVLoadMore
 import com.knc.nasachallenge.view_models.AppViewModel
@@ -60,11 +61,21 @@ class HomeFrg() : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        val rvHelperApod = RVHelperApod(appViewModel,frgHolderId!!)
+
+        val rvHelperApod = RVHelperApod(appViewModel,frgHolderId!!)
         val rvHelperDjsnPrd = RVHelperDjsnProduct(appViewModel, frgHolderId!!)
+
+        viewBinding.rgrpMain.setOnCheckedChangeListener { group, checkedId ->
+            when(checkedId){
+                viewBinding.rbtnApod.id -> appViewModel.modelFetchingId.value = 0
+                viewBinding.rbtnDjsn.id -> appViewModel.modelFetchingId.value = 1
+            }
+        }
+
         viewBinding.rvMain.layoutManager = LinearLayoutManager(requireContext())
         viewBinding.rvMain.adapter = rvHelperDjsnPrd.withLoadStateFooter(
             RVLoadMore{
+                checkInternet()
                 rvHelperDjsnPrd.retry()
             }
         )
@@ -89,15 +100,12 @@ class HomeFrg() : Fragment() {
                 }
             }
         }
-        lifecycleScope.launch {
 
-//            LoadApod(appViewModel.apodRepo).execute().collectLatest {
-//                appViewModel.pagingApod.collect {
-//                    rvHelperApod.submitData(it)
-//                }
+//        LoadApod(appViewModel.apodRepo).execute().collectLatest {
+//            appViewModel.pagingApod.collect {
+//                rvHelperApod.submitData(it)
 //            }
-
-        }
+//        }
 
         lifecycleScope.launch {
             rvHelperDjsnPrd.loadStateFlow.collect {

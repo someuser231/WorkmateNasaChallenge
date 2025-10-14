@@ -1,16 +1,14 @@
-package com.knc.data.remote
+package com.knc.data.local
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.knc.data.interfaces.ApodApiItf
 import com.knc.domain.models.ApodModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
-class ApodApiPaging(val apodApi: ApodApiItf) : PagingSource<String, ApodModel>() {
-
+class ApodDbPaging(val db: MainDb): PagingSource<String, ApodModel>() {
     val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     override fun getRefreshKey(state: PagingState<String, ApodModel>): String? {
@@ -23,11 +21,15 @@ class ApodApiPaging(val apodApi: ApodApiItf) : PagingSource<String, ApodModel>()
             val endDate = page
             val startDate = getPreviousDate(endDate, 30)
 
-            val response = apodApi.getApod(
-                apiKey = ApodApiUtils.API_KEY,
+            val apods = db.getApodDao().getApods(
                 startDate = startDate,
                 endDate = endDate
             )
+            val response = ArrayList<ApodModel>()
+            for (i in apods) {
+                response.add(db.dbItemToModelApod(i))
+            }
+
             val nextKey = if(response.isNotEmpty()) getPreviousDate(startDate, 1) else null
 
             LoadResult.Page(

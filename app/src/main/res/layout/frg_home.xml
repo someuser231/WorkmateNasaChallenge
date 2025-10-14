@@ -7,11 +7,41 @@
     tools:context=".fragments.HomeFrg"
     android:orientation="vertical">
 
+    <RadioGroup
+        android:id="@+id/rgrp_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:checkedButton="@id/rbtn_djsn"
+        >
+        <RadioButton
+            android:id="@+id/rbtn_djsn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Home.RadioButtons"
+            android:text="Dummy JSON Products"
+            />
+        <RadioButton
+            android:id="@+id/rbtn_apod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@style/Home.RadioButtons"
+            android:text="Nasa APOD"
+            />
+    </RadioGroup>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rgrp_main" />
 
     <ProgressBar
         android:id="@+id/prgbar_rv"

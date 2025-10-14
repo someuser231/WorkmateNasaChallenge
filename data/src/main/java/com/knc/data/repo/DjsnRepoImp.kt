@@ -44,7 +44,7 @@ class DjsnRepoImp(val db: MainDb): DjsnRepoItf, ViewModel() {
     override fun insertIntoDb(djsnPrd: DjsnProductModel) {
         viewModelScope.launch {
             db.getDjsnDao().insertProduct(
-                db.modelToDbItem(djsnPrd)
+                db.modelToDbItemDjsn(djsnPrd)
             )
         }
     }

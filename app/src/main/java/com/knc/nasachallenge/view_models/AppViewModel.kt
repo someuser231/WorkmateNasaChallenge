@@ -14,6 +14,7 @@ import com.knc.domain.interfaces.DjsnRepoItf
 import com.knc.domain.models.ApodModel
 import com.knc.domain.models.DjsnProductModel
 import com.knc.domain.usecases.LoadApodApi
+import com.knc.domain.usecases.LoadApodDb
 import com.knc.domain.usecases.LoadDjsnProductApi
 import com.knc.domain.usecases.LoadDjsnProductDb
 import kotlinx.coroutines.flow.Flow
@@ -25,13 +26,18 @@ open class AppViewModel(): ViewModel() {
     val isConnected: MutableLiveData<Boolean> by lazy {
         MutableLiveData<Boolean>()
     }
-
+    val modelFetchingId: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>()
+    }
 
     val apodRepo: ApodRepoItf by lazy {
-        ApodRepoImp()
+        ApodRepoImp(mainDb)
     }
-    val pagingApod: Flow<PagingData<ApodModel>> by lazy {
+    val pagingApodApi: Flow<PagingData<ApodModel>> by lazy {
         LoadApodApi(apodRepo).execute().cachedIn(viewModelScope)
+    }
+    val pagingApodDb: Flow<PagingData<ApodModel>> by lazy {
+        LoadApodDb(apodRepo).execute().cachedIn(viewModelScope)
     }
 
     val djsnRepo: DjsnRepoItf by lazy {

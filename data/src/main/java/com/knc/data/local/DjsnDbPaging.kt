@@ -19,7 +19,7 @@ class DjsnDbPaging(val db: MainDb): PagingSource<Int, DjsnProductModel>() {
 
             for (i in page..nextKey-1) {
                 response.add(
-                    db.dbItemToModel(
+                    db.dbItemToModelDjsn(
                         db.getDjsnDao().getProduct(i)
                     )
                 )

@@ -8,5 +8,5 @@ interface ApodRepoItf {
     fun loadItemsApi(): Flow<PagingData<ApodModel>>
     fun loadItemsDb(): Flow<PagingData<ApodModel>>
 
-    fun insertIntoDb()
+    fun insertIntoDb(apodModel: ApodModel)
 }

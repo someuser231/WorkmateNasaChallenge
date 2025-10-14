@@ -26,12 +26,6 @@ class RVHelperApod(val appViewModel: AppViewModel, val frgHolderId: Int):
         parent: ViewGroup,
         viewType: Int
     ): RVItem {
-//        val card = RvItemBinding.inflate(LayoutInflater.from(
-//            parent.context),
-//            parent,
-//            false
-//        )
-//        return RVItem(card)
         return createItemView(parent)
     }
 
