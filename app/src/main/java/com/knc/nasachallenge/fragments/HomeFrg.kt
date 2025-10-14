@@ -15,6 +15,7 @@ import com.knc.domain.usecases.LoadDjsnProduct
 import com.knc.nasachallenge.databinding.FrgHomeBinding
 import com.knc.nasachallenge.recycler_view.RVHelperApod
 import com.knc.nasachallenge.recycler_view.RVHelperDjsnProduct
+import com.knc.nasachallenge.recycler_view.RVLoadMore
 import com.knc.nasachallenge.view_models.AppViewModel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -59,7 +60,11 @@ class HomeFrg() : Fragment() {
 //        val rvHelperApod = RVHelperApod(appViewModel,frgHolderId!!)
         val rvHelperDjsnPrd = RVHelperDjsnProduct(appViewModel, frgHolderId!!)
         viewBinding.rvMain.layoutManager = LinearLayoutManager(requireContext())
-        viewBinding.rvMain.adapter = rvHelperDjsnPrd
+        viewBinding.rvMain.adapter = rvHelperDjsnPrd.withLoadStateFooter(
+            RVLoadMore{
+                rvHelperDjsnPrd.retry()
+            }
+        )
 
         lifecycleScope.launch {
 //            LoadApod(appViewModel.apodRepo).execute().collectLatest {

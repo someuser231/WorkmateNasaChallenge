@@ -3,6 +3,8 @@ package com.knc.nasachallenge.recycler_view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
+import androidx.paging.LoadState
+import androidx.paging.LoadStateAdapter
 import androidx.paging.PagingDataAdapter
 import com.knc.domain.models.ApodModel
 import com.knc.domain.models.DjsnProductModel
