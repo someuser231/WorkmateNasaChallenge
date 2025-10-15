@@ -6,7 +6,6 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.knc.domain.models.ApodModel
 import com.knc.domain.models.DjsnProductModel
-import kotlin.Int
 
 @Database(entities = [DjsnProductDbItem::class, ApodDbItem::class], version = 1)
 abstract class MainDb: RoomDatabase() {

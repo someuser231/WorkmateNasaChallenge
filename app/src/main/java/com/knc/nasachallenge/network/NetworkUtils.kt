@@ -21,7 +21,9 @@ object NetworkUtils {
         return withContext(Dispatchers.IO){
             try {
                 val socket = Socket()
-                socket.connect(InetSocketAddress("8.8.8.8", 53), 1500)
+                socket.connect(
+                    InetSocketAddress("8.8.8.8", 53),
+                    1500)
                 socket.close()
                 true
             } catch (e: IOException) {

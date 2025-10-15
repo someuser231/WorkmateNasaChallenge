@@ -27,18 +27,25 @@ class AddlInfoFrg() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val item = appViewModel.djsnPrdItem
-        viewBinding.txtTitle.text = item.title
-        viewBinding.txtDate.text = "Price: $${item.price}"
-        viewBinding.txtDescription.text = item.description
-        Picasso.get().load(item.images[0]).into(viewBinding.imgSimple)
+        appViewModel.modelFetchingId.observe(viewLifecycleOwner) {
+            when (it) {
+                0 -> {
+                    val item = appViewModel.apodItem
+                    viewBinding.txtTitle.text = item.title
+                    viewBinding.txtDate.text = item.date
+                    viewBinding.txtDescription.text = item.explanation
 
-//        val item = appViewModel.apodItem
-//        viewBinding.txtTitle.text = item.title
-//        viewBinding.txtDate.text = item.date
-//        viewBinding.txtDescription.text = item.explanation
-//
-//        Picasso.get().load(item.url).into(viewBinding.imgSimple)
+                    Picasso.get().load(item.url).into(viewBinding.imgSimple)
+                }
+                1 -> {
+                    val item = appViewModel.djsnPrdItem
+                    viewBinding.txtTitle.text = item.title
+                    viewBinding.txtDate.text = "Price: $${item.price}"
+                    viewBinding.txtDescription.text = item.description
+                    Picasso.get().load(item.images[0]).into(viewBinding.imgSimple)
+                }
+            }
+        }
 
         viewBinding.toolbar.ibtnBack.setOnClickListener {
             parentFragmentManager.popBackStack()

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NasaChallenge</string>
+    <string name="app_name">Workmate Challenge</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="connection_failed">Fail!\nCheck your Internet or VPN\nconnection!</string>
 </resources>

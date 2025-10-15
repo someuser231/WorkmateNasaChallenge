@@ -4,7 +4,6 @@ import androidx.core.view.isVisible
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.RecyclerView
 import com.knc.nasachallenge.databinding.LoaderPagingBinding
-import com.knc.nasachallenge.databinding.RvItemBinding
 
 class RVLoadingItem(val view: LoaderPagingBinding, retry: ()->Unit):
     RecyclerView.ViewHolder(view.root) {
